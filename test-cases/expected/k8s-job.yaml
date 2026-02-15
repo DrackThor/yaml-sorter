@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+    labels:
+        app: backup
+    name: backup-job
+    namespace: default
+spec:
+    backoffLimit: 3
+    completions: 1
+    parallelism: 1
+    template:
+        spec:
+            containers:
+                - command:
+                    - /bin/sh
+                    - -c
+                    - "tar czf /backup/data.tar.gz /data && echo done"
+                  image: alpine:3.19
+                  name: backup
+            restartPolicy: OnFailure

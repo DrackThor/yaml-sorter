@@ -12,10 +12,9 @@ spec:
     egress:
         - action: allow
           applications:
-            - Consul
-            - SSL
-          name: nv.consul-server.consul-egress-0
-          ports: any
+            - any
+          name: nv.consul-server.consul-egress-1
+          ports: tcp/8502
           priority: 0
           selector:
             comment: ""
@@ -30,9 +29,10 @@ spec:
             original_name: ""
         - action: allow
           applications:
-            - any
-          name: nv.consul-server.consul-egress-1
-          ports: tcp/8502
+            - Consul
+            - SSL
+          name: nv.consul-server.consul-egress-0
+          ports: any
           priority: 0
           selector:
             comment: ""

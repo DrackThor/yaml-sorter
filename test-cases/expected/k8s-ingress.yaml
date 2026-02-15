@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/rewrite-target: /
+    name: web-ingress
+    namespace: production
+spec:
+    ingressClassName: nginx
+    rules:
+        - host: app.example.com
+          http:
+            paths:
+                - backend:
+                    service:
+                        name: api-svc
+                        port:
+                            number: 8080
+                  path: /api
+                  pathType: Prefix
+                - backend:
+                    service:
+                        name: web-svc
+                        port:
+                            number: 80
+                  path: /
+                  pathType: Prefix
+    tls:
+        - hosts:
+            - app.example.com
+          secretName: app-tls

@@ -97,7 +97,7 @@ cp .yaml-sort.example.yaml .yaml-sort.yaml
 yaml-sort -k -c .yaml-sort.yaml -o sorted.yaml neuvector-runtime-group.yaml
 ```
 
-An example config is in the repo: [.yaml-sort.example.yaml](.yaml-sort.example.yaml).
+An example config is in the repo: [.yaml-sort.example.yaml](.yaml-sort.example.yaml). For before/after examples of list sorting, see [EXAMPLES.md](EXAMPLES.md).
 
 ### Help
 
@@ -118,20 +118,25 @@ yaml-sort --help
 
 ## Examples
 
-### Example Input
+**[EXAMPLES.md](EXAMPLES.md)** has detailed before/after examples, including:
+
+- Simple and nested mapping sort
+- Kubernetes manifest root order (`-k`)
+- **Sorting lists of objects by key** with a config file (`-c`): `spec.egress`, `spec.ingress` by `name`
+- Multiple list paths and combined K8s + list sort (e.g. NeuVector-style manifests)
+
+Quick illustration (default alphabetical sort):
 
 ```yaml
+# Before
 zebra:
   c: value3
   a: value1
   b: value2
 apple: value
 banana: value
-```
 
-### Example Output
-
-```yaml
+# After (yaml-sort file.yaml)
 apple: value
 banana: value
 zebra:

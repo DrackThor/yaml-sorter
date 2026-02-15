@@ -29,27 +29,28 @@ yaml-sort/
 ### Code Organization
 
 1. **Package Structure**: Follow standard Go project layout
-   - `cmd/` for application entry points
-   - `internal/` for private application code
-   - `pkg/` for library code (if needed)
+    - `cmd/` for application entry points
+    - `internal/` for private application code
+    - `pkg/` for library code (if needed)
 
 2. **Naming Conventions**:
-   - Use camelCase for unexported functions and variables
-   - Use PascalCase for exported functions, types, and constants
-   - Use short, descriptive names
-   - Avoid abbreviations unless widely understood
+    - Use camelCase for unexported functions and variables
+    - Use PascalCase for exported functions, types, and constants
+    - Use short, descriptive names
+    - Avoid abbreviations unless widely understood
+    - follow semantic linebreaks, aka only one sentence per line
 
 3. **Error Handling**:
-   - Always check and handle errors explicitly
-   - Use `fmt.Errorf` with `%w` verb for error wrapping
-   - Return errors, don't ignore them
-   - Provide context in error messages
+    - Always check and handle errors explicitly
+    - Use `fmt.Errorf` with `%w` verb for error wrapping
+    - Return errors, don't ignore them
+    - Provide context in error messages
 
 4. **Function Design**:
-   - Keep functions small and focused (single responsibility)
-   - Prefer pure functions when possible
-   - Limit function parameters (max 3-4)
-   - Return errors as the last return value
+    - Keep functions small and focused (single responsibility)
+    - Prefer pure functions when possible
+    - Limit function parameters (max 3-4)
+    - Return errors as the last return value
 
 ### Testing
 
@@ -60,6 +61,7 @@ yaml-sort/
 5. **Test Naming**: Use descriptive test names: `TestFunctionName_Scenario`
 
 Example:
+
 ```go
 func TestSortYAML_SimpleMapping(t *testing.T) {
     // test implementation
@@ -69,10 +71,10 @@ func TestSortYAML_SimpleMapping(t *testing.T) {
 ### Code Style
 
 1. **Formatting**: Always use `gofmt` or `goimports`
-2. **Comments**: 
-   - Add comments for exported functions, types, and constants
-   - Use complete sentences
-   - Start with the name of the thing being described
+2. **Comments**:
+    - Add comments for exported functions, types, and constants
+    - Use complete sentences
+    - Start with the name of the thing being described
 3. **Imports**: Group imports: stdlib, third-party, local
 4. **Line Length**: Keep lines under 100 characters when possible
 
@@ -105,6 +107,7 @@ func TestSortYAML_SimpleMapping(t *testing.T) {
 ## Common Patterns
 
 ### Error Wrapping
+
 ```go
 if err != nil {
     return fmt.Errorf("failed to read file: %w", err)
@@ -112,6 +115,7 @@ if err != nil {
 ```
 
 ### Table-Driven Tests
+
 ```go
 tests := []struct {
     name     string
@@ -129,6 +133,7 @@ tests := []struct {
 ```
 
 ### Context Usage
+
 ```go
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 defer cancel()

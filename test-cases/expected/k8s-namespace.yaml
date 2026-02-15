@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+    annotations:
+        description: Staging environment for pre-production testing
+    labels:
+        env: staging
+        team: platform
+    name: staging
