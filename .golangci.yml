@@ -37,8 +37,6 @@ linters:
         - octalLiteral
         - whyNoLint
         - wrapperFunc
-    govet:
-      check-shadowing: true
     gocyclo:
       min-complexity: 15
     misspell:

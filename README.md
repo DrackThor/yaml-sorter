@@ -153,7 +153,7 @@ zebra:
 
 ### Prerequisites
 
-- Go 1.21 or later
+- Go 1.26 or later
 - [golangci-lint](https://golangci-lint.run/) (for lint and pre-commit)
 - Optional: [pre-commit](https://pre-commit.com/) (for commit-msg and pre-commit hooks)
 
@@ -209,7 +209,7 @@ golangci-lint run
 
 Pre-commit enforces **conventional commit messages** and **Go best practices** (format, vet, tests, lint).
 
-**Requirements:** Python 3 with `pre-commit`, Go 1.21+, and `golangci-lint` on your PATH.
+**Requirements:** Python 3 with `pre-commit`, Go 1.26+, and `golangci-lint` on your PATH.
 
 Install hooks (run from repo root):
 
