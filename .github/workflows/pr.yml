@@ -1,12 +1,15 @@
-name: "[release] Semantic release"
+name: "[pr] Lint, test, build"
 
 on:
   push:
     branches:
-      - main
+      - "**"
+    tags-ignore:
+      - "**"
+  pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   lint:
@@ -31,7 +34,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -40,32 +42,23 @@ jobs:
       - name: Test
         run: go test -v ./...
 
-  release:
-    name: "[release] go-semantic-release + goreleaser"
+  build:
+    name: "[build] go build"
     runs-on: ubuntu-latest
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
 
-      - name: Set up GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: "~> v2"
-          install-only: true
+      - name: Build
+        run: go build -v -o yaml-sort .
 
-      - name: Run semantic release with GoReleaser hook
-        uses: go-semantic-release/action@v1
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          changelog-file: CHANGELOG.md
-          hooks: goreleaser
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: yaml-sort-ci-linux-amd64
+          path: yaml-sort

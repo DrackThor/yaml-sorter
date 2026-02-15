@@ -1,0 +1,23 @@
+version: 2
+
+project_name: yaml-sort
+
+builds:
+  - id: yaml-sort
+    main: .
+    binary: yaml-sort
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+checksum:
+  name_template: checksums.txt
