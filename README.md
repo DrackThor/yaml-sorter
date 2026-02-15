@@ -28,6 +28,10 @@ go build -o yaml-sort .
 go install github.com/drackthor/yaml-sort@latest
 ```
 
+### Releases
+
+Pushing to `main` runs [semantic-release](https://github.com/go-semantic-release/semantic-release): the next version is derived from **conventional commit messages** since the last tag (`feat:` → minor, `fix:` → patch, `BREAKING CHANGE` → major). A GitHub release and tag are created automatically; the Build workflow then attaches binaries for Linux, macOS, and Windows. Download them from the [Releases](https://github.com/drackthor/yaml-sort/releases) page.
+
 ## Usage
 
 ### Basic Usage
