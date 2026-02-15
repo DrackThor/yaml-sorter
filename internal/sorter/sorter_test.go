@@ -145,3 +145,37 @@ status:
 		t.Error("under spec, keys should be sorted alphabetically")
 	}
 }
+
+func TestSortYAMLWithOptions_ListSortKeys(t *testing.T) {
+	input := `spec:
+  egress:
+    - name: nv.consul-server.consul-egress-1
+      action: allow
+    - name: nv.consul-server.consul-egress-0
+      action: allow
+  ingress:
+    - name: nv.ui-ingress-1
+      action: allow
+    - name: nv.ui-ingress-0
+      action: allow
+`
+	opts := Options{
+		ListSortKeys: map[string]string{
+			"spec.egress":  "name",
+			"spec.ingress": "name",
+		},
+	}
+	result, err := SortYAMLWithOptions([]byte(input), opts)
+	if err != nil {
+		t.Fatalf("SortYAMLWithOptions() error = %v", err)
+	}
+	resultStr := string(result)
+	// spec.egress should be sorted by name: -egress-0 before -egress-1
+	if strings.Index(resultStr, "egress-0") > strings.Index(resultStr, "egress-1") {
+		t.Error("spec.egress list should be sorted by name (egress-0 before egress-1)")
+	}
+	// spec.ingress should be sorted by name: -ingress-0 before -ingress-1
+	if strings.Index(resultStr, "ingress-0") > strings.Index(resultStr, "ingress-1") {
+		t.Error("spec.ingress list should be sorted by name (ingress-0 before ingress-1)")
+	}
+}

@@ -1,0 +1,15 @@
+# Example config for yaml-sort. Copy to .yaml-sort.yaml and use: yaml-sort -c .yaml-sort.yaml -k file.yaml
+#
+# listSortKeys: sort lists of objects by a specific key in each element.
+#   path: dot-separated path from document root to the list (e.g. spec.egress)
+#   key:  field name inside each list element to sort by (e.g. name)
+#
+# Use case: NeuVector NvSecurityRule has spec.egress and spec.ingress as lists
+# of rules; sorting by "name" keeps them in stable order.
+listSortKeys:
+  - path: spec.egress
+    key: name
+  - path: spec.ingress
+    key: name
+  - path: spec.process
+    key: name

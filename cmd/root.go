@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/drackthor/yaml-sort/internal/config"
 	"github.com/drackthor/yaml-sort/internal/sorter"
 	"github.com/spf13/cobra"
 )
 
 var (
-	inplace bool
-	output  string
-	k8sMode bool
+	inplace    bool
+	output     string
+	k8sMode    bool
+	configPath string
 )
 
 var rootCmd = &cobra.Command{
@@ -34,13 +36,21 @@ by their keys while preserving the structure and comments where possible.`,
 			return fmt.Errorf("failed to read input file: %w", err)
 		}
 
-		// Sort YAML (optionally with Kubernetes manifest root order)
-		var sorted []byte
-		if k8sMode {
-			sorted, err = sorter.SortYAMLK8s(content)
-		} else {
-			sorted, err = sorter.SortYAML(content)
+		// Build sort options (K8s root + optional list sort keys from config)
+		opts := sorter.Options{K8sRoot: k8sMode}
+		if configPath != "" {
+			cfg, loadErr := config.Load(configPath)
+			if loadErr != nil {
+				return fmt.Errorf("config: %w", loadErr)
+			}
+			if cfg != nil && len(cfg.ListSortKeys) > 0 {
+				opts.ListSortKeys = make(map[string]string, len(cfg.ListSortKeys))
+				for _, r := range cfg.ListSortKeys {
+					opts.ListSortKeys[r.Path] = r.Key
+				}
+			}
 		}
+		sorted, err := sorter.SortYAMLWithOptions(content, opts)
 		if err != nil {
 			return fmt.Errorf("failed to sort YAML: %w", err)
 		}
@@ -77,4 +87,5 @@ func init() {
 	rootCmd.Flags().BoolVarP(&inplace, "inplace", "i", false, "sort file in-place, replacing the original file")
 	rootCmd.Flags().StringVarP(&output, "output", "o", "", "write sorted output to specified file")
 	rootCmd.Flags().BoolVarP(&k8sMode, "k8s", "k", false, "Kubernetes manifest mode: root keys in fixed order (apiVersion, kind, metadata, spec, …), rest alphabetical")
+	rootCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file defining list sort keys (e.g. sort spec.egress by name)")
 }

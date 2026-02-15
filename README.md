@@ -6,6 +6,7 @@ A command-line tool written in Go that sorts YAML files alphabetically by their 
 
 - Sort YAML files **recursively** by keys (every mapping level, including inside lists)
 - Optional **Kubernetes manifest** mode (`-k`): root keys in fixed order (`apiVersion`, `kind`, `metadata`, `spec`, …), rest alphabetical
+- **Config file** (`-c`): sort lists of objects by a specific key (e.g. `spec.egress` by `name`) for stable, deterministic order
 - In-place sorting option (`-i`)
 - Output to a new file option (`-o`)
 - Standard output support
@@ -70,6 +71,34 @@ yaml-sort -k deployment.yaml
 yaml-sort -k -o sorted.yaml manifest.yaml
 ```
 
+### Sort lists of objects by key (config file, `-c`)
+
+For YAML with **lists of objects** (e.g. `spec.egress`, `spec.ingress` in NeuVector CRDs), you can sort each list by a field (e.g. `name`) so the order is stable. Use a **config file** and pass it with `-c`.
+
+**Config format** (YAML):
+
+```yaml
+listSortKeys:
+  - path: spec.egress   # dot-separated path from document root to the list
+    key: name          # field inside each list element to sort by
+  - path: spec.ingress
+    key: name
+  - path: spec.process
+    key: name
+```
+
+- **path**: Where the list lives (e.g. `spec.egress`, `metadata.labels`).
+- **key**: For each item in that list (must be a mapping), sort by this key’s value; missing keys sort as empty string.
+
+Example with NeuVector runtime group and K8s root order:
+
+```bash
+cp .yaml-sort.example.yaml .yaml-sort.yaml
+yaml-sort -k -c .yaml-sort.yaml -o sorted.yaml neuvector-runtime-group.yaml
+```
+
+An example config is in the repo: [.yaml-sort.example.yaml](.yaml-sort.example.yaml).
+
 ### Help
 
 Display help information:
@@ -79,6 +108,13 @@ yaml-sort -h
 # or
 yaml-sort --help
 ```
+
+| Flag        | Short | Description                                                  |
+|-------------|-------|--------------------------------------------------------------|
+| `--inplace` | `-i`  | Write output back to the input file                          |
+| `--output`  | `-o`  | Write output to a file                                       |
+| `--k8s`     | `-k`  | Use K8s root key order (apiVersion, kind, metadata, spec, …) |
+| `--config`  | `-c`  | Config file for list sort keys (path → key)                  |
 
 ## Examples
 
@@ -220,10 +256,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - Use table-driven tests where appropriate
 - Test both success and error cases
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## YAML terminology used in this project
 
 The code and comments refer to the following YAML and tree concepts (as in [gopkg.in/yaml.v3](https://github.com/go-yaml/yaml)):
@@ -245,3 +277,7 @@ So when we say “sort a mapping node”, we mean: take its key-value pairs, sor
 
 - Built with [Cobra](https://github.com/spf13/cobra) for CLI functionality
 - Uses [gopkg.in/yaml.v3](https://github.com/go-yaml/yaml) for YAML parsing
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
