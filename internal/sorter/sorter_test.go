@@ -45,17 +45,15 @@ zebra:
 			input: `c: [3, 2, 1]
 a: value1
 b: value2`,
+			// Encoder may output flow-style [3, 2, 1]; both are valid
 			expected: `a: value1
 b: value2
-c:
-    - 3
-    - 2
-    - 1
+c: [3, 2, 1]
 `,
 			wantErr: false,
 		},
 		{
-			name: "empty document",
+			name:  "empty document",
 			input: `{}`,
 			expected: `{}
 `,
@@ -94,18 +92,18 @@ func TestSortYAML_PreservesStructure(t *testing.T) {
 database:
   name: testdb
   user: admin`
-	
+
 	result, err := SortYAML([]byte(input))
 	if err != nil {
 		t.Fatalf("SortYAML() error = %v", err)
 	}
-	
+
 	resultStr := string(result)
-	// Check that keys are sorted
-	if strings.Index(resultStr, "database:") < strings.Index(resultStr, "server:") {
+	// Check that keys are sorted (database < server alphabetically)
+	if strings.Index(resultStr, "server:") < strings.Index(resultStr, "database:") {
 		t.Error("Keys should be sorted alphabetically")
 	}
-	
+
 	// Check that nested structure is preserved
 	if !strings.Contains(resultStr, "port:") || !strings.Contains(resultStr, "host:") {
 		t.Error("Nested keys should be preserved")

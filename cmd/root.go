@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 	Long: `yaml-sort is a CLI tool that sorts YAML files alphabetically
 by their keys while preserving the structure and comments where possible.`,
 	Args: cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		inputFile := args[0]
 
 		// Validate flags

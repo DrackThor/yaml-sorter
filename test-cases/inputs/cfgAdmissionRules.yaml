@@ -4,22 +4,22 @@ metadata:
   name: local
 spec:
   rules:
-  - action: deny
-    comment: only allow custom registry
-    criteria:
-    - name: imageRegistry
-      op: notContainsAny
-      path: imageRegistry
-      value: "https://registry.fullstacks.io","https://registry.lab.fullstacks.io"
-    disabled: false
-  - action: deny
-    comment: deny hostIPC
-    criteria:
-    - name: namespace
-      op: notContainsAny
-      path: namespace
-      value: kube-system,cattle-system,trident,calico-system,cattle-fleet-system,...
-    - name: shareIpcWithHost
-      op: =
-      path: shareIpcWithHost
-      value: "true"
+    - action: deny
+      comment: only allow custom registry
+      disabled: false
+      criteria:
+        - name: imageRegistry
+          op: notContainsAny
+          path: imageRegistry
+          value: 'https://registry.fullstacks.io,https://registry.lab.fullstacks.io'
+    - action: deny
+      comment: deny hostIPC
+      criteria:
+        - name: namespace
+          op: notContainsAny
+          path: namespace
+          value: 'kube-system,cattle-system,trident,calico-system,cattle-fleet-system'
+        - name: shareIpcWithHost
+          op: "="
+          path: shareIpcWithHost
+          value: "true"

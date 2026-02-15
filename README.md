@@ -86,9 +86,9 @@ banana: value
 apple: value
 banana: value
 zebra:
-    a: value1
-    b: value2
-    c: value3
+  a: value1
+  b: value2
+  c: value3
 ```
 
 ## Development
@@ -98,6 +98,26 @@ zebra:
 - Go 1.21 or later
 - [golangci-lint](https://golangci-lint.run/) (for lint and pre-commit)
 - Optional: [pre-commit](https://pre-commit.com/) (for commit-msg and pre-commit hooks)
+
+### Go commands
+
+Run these from the repository root.
+
+| Command                            | What it does                                                                                                                                        |
+|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `go mod tidy`                      | Updates `go.mod` and `go.sum`: adds any missing dependencies, removes unused ones, and pins versions. Run after cloning or when you change imports. |
+| `go mod download`                  | Downloads all modules listed in `go.mod` into the module cache (optional; `go build` and `go test` do this automatically).                          |
+| `go build -o yaml-sort .`          | Builds the current package (`.`) and writes the executable to `yaml-sort`.                                                                          |
+| `go test ./...`                    | Runs all tests in the module (unit tests and `test-cases/` integration tests).                                                                      |
+| `go test -short ./...`             | Same as above but skips long-running tests if the code uses `testing.Short()`.                                                                      |
+| `go test -cover ./...`             | Runs tests and prints per-package coverage.                                                                                                         |
+| `go test -race ./...`              | Runs tests with the race detector to find data races.                                                                                               |
+| `go fmt ./...`                     | Formats all Go files in the module (standard style).                                                                                                |
+| `go vet ./...`                     | Runs the Go vet tool for static checks (e.g. suspicious constructs, unreachable code).                                                              |
+| `go run ./scripts/gen_expected.go` | Generates sorted YAML files from `test-cases/inputs/` into `test-cases/expected/`.                                                                  |
+| `go run . file.yaml`               | Builds and runs the CLI in one step (e.g. `go run . -o out.yaml file.yaml`).                                                                        |
+
+**First-time setup:** after cloning, run `go mod tidy` so `go.sum` is populated; then `go build -o yaml-sort .` and `go test ./...` should work.
 
 ### Running Tests
 

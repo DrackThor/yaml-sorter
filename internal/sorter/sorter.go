@@ -19,7 +19,7 @@ func SortYAML(data []byte) ([]byte, error) {
 	}
 
 	// Sort the root node
-	sortNode(&node.Content[0])
+	sortNode(node.Content[0])
 
 	// Marshal back to YAML
 	result, err := yaml.Marshal(&node)
