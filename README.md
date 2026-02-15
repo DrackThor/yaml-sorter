@@ -96,13 +96,16 @@ zebra:
 ### Prerequisites
 
 - Go 1.21 or later
-- Make (optional, for convenience commands)
+- [golangci-lint](https://golangci-lint.run/) (for lint and pre-commit)
+- Optional: [pre-commit](https://pre-commit.com/) (for commit-msg and pre-commit hooks)
 
 ### Running Tests
 
 ```bash
 go test ./...
 ```
+
+Integration tests use real-world YAML under `test-cases/inputs/` (e.g. SUSE NeuVector CRDs). See [test-cases/README.md](test-cases/README.md).
 
 Run tests with coverage:
 
@@ -124,6 +127,29 @@ This project uses `golangci-lint`. To run linting:
 golangci-lint run
 ```
 
+### Pre-commit hooks
+
+Pre-commit enforces **conventional commit messages** and **Go best practices** (format, vet, tests, lint).
+
+**Requirements:** Python 3 with `pre-commit`, Go 1.21+, and `golangci-lint` on your PATH.
+
+Install hooks (run from repo root):
+
+```bash
+pre-commit install --install-hook-types commit-msg pre-commit
+```
+
+After this, each commit will:
+
+- Reject messages that don’t follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g. `feat: add X`, `fix: correct Y`).
+- Run `go fmt ./...`, `go vet ./...`, `go test -short ./...`, and `golangci-lint run ./...`.
+
+Run manually on all files:
+
+```bash
+pre-commit run --all-files
+```
+
 ### Building
 
 ```bash
@@ -139,10 +165,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Add tests for new functionality
+4. Add tests for new functionality (including real-world cases in `test-cases/inputs/` if relevant)
 5. Ensure all tests pass (`go test ./...`)
 6. Ensure linting passes (`golangci-lint run`)
-7. Commit your changes (`git commit -m 'Add some amazing feature'`)
+7. Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages (e.g. `feat: add X`, `fix: correct Y`). Pre-commit will enforce this if hooks are installed.
 8. Push to the branch (`git push origin feature/amazing-feature`)
 9. Open a Pull Request
 

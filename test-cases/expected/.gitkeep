@@ -1,0 +1,2 @@
+# Generated sorted outputs go here. Run from repo root:
+#   go run ./scripts/gen_expected.go

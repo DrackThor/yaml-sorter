@@ -1,0 +1,42 @@
+# Pre-commit hooks for yaml-sort
+# Install: pre-commit install --install-hook-types commit-msg pre-commit
+# Run:    pre-commit run --all-files
+
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+
+repos:
+  # Conventional commit message format
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.3.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+
+  # Go: format, vet, test, lint (requires Go and golangci-lint on PATH)
+  - repo: local
+    hooks:
+      - id: go-fmt
+        name: go fmt
+        entry: bash -c "go fmt ./..."
+        language: system
+        types: [go]
+      - id: go-vet
+        name: go vet
+        entry: bash -c "go vet ./..."
+        language: system
+        types: [go]
+      - id: go-test
+        name: go test
+        entry: bash -c "go test -short ./..."
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: golangci-lint
+        name: golangci-lint
+        entry: bash -c "golangci-lint run ./..."
+        language: system
+        pass_filenames: false
+        always_run: true

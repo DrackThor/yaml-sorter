@@ -12,8 +12,15 @@ yaml-sort/
 │   └── sorter/      # YAML sorting logic
 │       ├── sorter.go
 │       └── sorter_test.go
+├── test-cases/       # Real-world YAML test data and integration tests
+│   ├── inputs/      # Sample inputs (e.g. SUSE NeuVector CRDs)
+│   ├── expected/    # Optional: canonical sorted output (generate with scripts/gen_expected.go)
+│   ├── integration_test.go
+│   └── README.md
+├── scripts/         # Helper scripts (e.g. gen_expected.go)
 ├── main.go          # Application entry point
 ├── go.mod           # Go module definition
+├── .pre-commit-config.yaml  # Conventional commits + Go hooks
 └── .github/         # GitHub Actions workflows
 ```
 
@@ -131,10 +138,11 @@ defer cancel()
 
 ### Before Committing
 
-1. Run tests: `go test ./...`
+1. Run tests: `go test ./...` (includes `test-cases/` integration tests with real-world YAML).
 2. Run linter: `golangci-lint run`
 3. Format code: `go fmt ./...`
 4. Check for unused imports: `goimports -l .`
+5. Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages. Pre-commit hooks (see `.pre-commit-config.yaml`) enforce this and the above steps when installed.
 
 ### CI/CD
 
