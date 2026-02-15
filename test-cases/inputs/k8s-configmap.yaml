@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: default
+  name: app-config
+  labels:
+    app: myapp
+data:
+  LOG_LEVEL: info
+  DB_HOST: postgres.default.svc.cluster.local
+  CACHE_TTL: "3600"
+  FEATURE_FLAGS: "new-ui,beta-api"

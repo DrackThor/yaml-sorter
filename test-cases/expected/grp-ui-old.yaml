@@ -1,0 +1,156 @@
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+    name: nv.bookstore-ui.publishing-company
+    namespace: publishing-company
+spec:
+    dlp:
+        settings: []
+        status: true
+    egress: []
+    file: []
+    ingress:
+        - action: allow
+          applications:
+            - SSL
+          name: nv.bookstore-ui.publishing-company-ingress-22
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria: []
+            name: external
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-23
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: splunk-otel-collector
+                - key: service
+                  op: =
+                  value: splunk-synthetics.splunk-otel-collector
+            name: nv.splunk-synthetics.splunk-otel-collector
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-24
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria: []
+            name: nodes
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-25
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: kube-system
+                - key: service
+                  op: =
+                  value: rke2-ingress-nginx-controller.kube-system
+            name: nv.rke2-ingress-nginx-controller.kube-system
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-26
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria: []
+            name: nodes
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-27
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: splunk-otel-collector
+                - key: service
+                  op: =
+                  value: splunk-synthetics.splunk-otel-collector
+            name: nv.splunk-synthetics.splunk-otel-collector
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-28
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: kube-system
+                - key: service
+                  op: =
+                  value: rke2-ingress-nginx-controller.kube-system
+            name: nv.rke2-ingress-nginx-controller.kube-system
+            original_name: ""
+        - action: allow
+          applications:
+            - SSL
+          name: nv.bookstore-ui.publishing-company-ingress-29
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria: []
+            name: external
+            original_name: ""
+    process:
+        - action: allow
+          allow_update: false
+          name: nginx
+          path: /usr/sbin/nginx
+        - action: allow
+          allow_update: false
+          name: pause
+          path: /pause
+    process_profile:
+        baseline: zero-drift
+        mode: Discover
+    target:
+        policymode: Monitor
+        selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: publishing-company
+                - key: service
+                  op: =
+                  value: bookstore-ui.publishing-company
+            grp_band_width: 0
+            grp_sess_cur: 0
+            grp_sess_rate: 0
+            mon_metric: false
+            name: nv.bookstore-ui.publishing-company
+            original_name: ""
+    waf:
+        settings: []
+        status: true

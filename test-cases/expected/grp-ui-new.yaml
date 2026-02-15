@@ -1,0 +1,267 @@
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+    name: nv.bookstore-ui.publishing-company
+    namespace: publishing-company
+spec:
+    dlp:
+        settings:
+            - action: deny
+              name: sensor.creditcard
+        status: true
+    egress:
+        - action: allow
+          applications:
+            - Consul
+            - SSL
+          name: nv.consul-server.consul-egress-0
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: consul
+                - key: service
+                  op: =
+                  value: consul-server.consul
+            name: nv.consul-server.consul
+            original_name: ""
+        - action: allow
+          applications:
+            - any
+          name: nv.consul-server.consul-egress-1
+          ports: tcp/8502
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: consul
+                - key: service
+                  op: =
+                  value: consul-server.consul
+            name: nv.consul-server.consul
+            original_name: ""
+    file: []
+    ingress:
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-0
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: splunk-otel-collector
+                - key: service
+                  op: =
+                  value: splunk-synthetics.splunk-otel-collector
+            name: nv.splunk-synthetics.splunk-otel-collector
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-1
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            name: nodes
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-2
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            name: nodes
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-3
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: kube-system
+                - key: service
+                  op: =
+                  value: rke2-ingress-nginx-controller.kube-system
+            name: nv.rke2-ingress-nginx-controller.kube-system
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-4
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: splunk-otel-collector
+                - key: service
+                  op: =
+                  value: splunk-synthetics.splunk-otel-collector
+            name: nv.splunk-synthetics.splunk-otel-collector
+            original_name: ""
+        - action: allow
+          applications:
+            - SSL
+          name: nv.bookstore-ui.publishing-company-ingress-5
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            name: external
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-6
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: kube-system
+                - key: service
+                  op: =
+                  value: rke2-ingress-nginx-controller.kube-system
+            name: nv.rke2-ingress-nginx-controller.kube-system
+            original_name: ""
+        - action: allow
+          applications:
+            - SSL
+          name: nv.bookstore-ui.publishing-company-ingress-7
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            name: external
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-8
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            name: nodes
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-9
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: consul
+                - key: service
+                  op: =
+                  value: prometheus-server.consul
+            name: nv.prometheus-server.consul
+            original_name: ""
+        - action: allow
+          applications:
+            - HTTP
+          name: nv.bookstore-ui.publishing-company-ingress-10
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: publishing-company-kafka
+                - key: service
+                  op: =
+                  value: schemaregistry.publishing-company-kafka
+            name: nv.schemaregistry.publishing-company-kafka
+            original_name: ""
+        - action: allow
+          applications:
+            - SSL
+          name: nv.bookstore-ui.publishing-company-ingress-11
+          ports: any
+          priority: 0
+          selector:
+            comment: ""
+            criteria:
+                - key: service
+                  op: =
+                  value: api-gateway-dev01-public.consul
+                - key: domain
+                  op: =
+                  value: consul
+            name: nv.api-gateway-dev01-public.consul
+            original_name: ""
+    process:
+        - action: allow
+          allow_update: false
+          name: consul-dataplane
+          path: /usr/local/bin/consul-dataplane
+        - action: allow
+          allow_update: false
+          name: consul-k8s-control-plane
+          path: /bin/consul-k8s-control-plane
+        - action: allow
+          allow_update: false
+          name: dumb-init
+          path: /usr/local/bin/dumb-init
+        - action: allow
+          allow_update: false
+          name: envoy
+          path: /usr/local/bin/envoy
+        - action: allow
+          allow_update: false
+          name: nginx
+          path: /usr/sbin/nginx
+        - action: allow
+          allow_update: false
+          name: pause
+          path: /pause
+    process_profile:
+        baseline: zero-drift
+        mode: Protect
+    response: null
+    target:
+        policymode: Protect
+        selector:
+            comment: ""
+            criteria:
+                - key: domain
+                  op: =
+                  value: publishing-company
+                - key: service
+                  op: =
+                  value: bookstore-ui.publishing-company
+            grp_band_width: 0
+            grp_sess_cur: 0
+            grp_sess_rate: 0
+            mon_metric: false
+            name: nv.bookstore-ui.publishing-company
+            original_name: ""
+    waf:
+        settings: []
+        status: true

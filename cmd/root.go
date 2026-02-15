@@ -11,6 +11,7 @@ import (
 var (
 	inplace bool
 	output  string
+	k8sMode bool
 )
 
 var rootCmd = &cobra.Command{
@@ -33,8 +34,13 @@ by their keys while preserving the structure and comments where possible.`,
 			return fmt.Errorf("failed to read input file: %w", err)
 		}
 
-		// Sort YAML
-		sorted, err := sorter.SortYAML(content)
+		// Sort YAML (optionally with Kubernetes manifest root order)
+		var sorted []byte
+		if k8sMode {
+			sorted, err = sorter.SortYAMLK8s(content)
+		} else {
+			sorted, err = sorter.SortYAML(content)
+		}
 		if err != nil {
 			return fmt.Errorf("failed to sort YAML: %w", err)
 		}
@@ -70,4 +76,5 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolVarP(&inplace, "inplace", "i", false, "sort file in-place, replacing the original file")
 	rootCmd.Flags().StringVarP(&output, "output", "o", "", "write sorted output to specified file")
+	rootCmd.Flags().BoolVarP(&k8sMode, "k8s", "k", false, "Kubernetes manifest mode: root keys in fixed order (apiVersion, kind, metadata, spec, …), rest alphabetical")
 }

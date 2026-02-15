@@ -4,10 +4,10 @@ A command-line tool written in Go that sorts YAML files alphabetically by their 
 
 ## Features
 
-- Sort YAML files alphabetically by keys
-- Preserve nested structure and hierarchy
-- In-place sorting option
-- Output to a new file option
+- Sort YAML files **recursively** by keys (every mapping level, including inside lists)
+- Optional **Kubernetes manifest** mode (`-k`): root keys in fixed order (`apiVersion`, `kind`, `metadata`, `spec`, …), rest alphabetical
+- In-place sorting option (`-i`)
+- Output to a new file option (`-o`)
 - Standard output support
 - Comprehensive test coverage
 
@@ -55,6 +55,19 @@ Sort a file and write the result to a new file:
 yaml-sort -o sorted.yaml file.yaml
 # or
 yaml-sort --output sorted.yaml file.yaml
+```
+
+### Kubernetes manifests (-k)
+
+For Kubernetes-style YAML (e.g. `kind`, `apiVersion`, `metadata`, `spec`), use `-k` so the **root** keys are output in a fixed order instead of A–Z:
+
+- `apiVersion`, `kind`, `metadata`, `spec`, `data`, `status`, then any other root keys alphabetically.
+
+Everything under those keys (e.g. under `metadata` or `spec`) is still sorted **recursively** and alphabetically.
+
+```bash
+yaml-sort -k deployment.yaml
+yaml-sort -k -o sorted.yaml manifest.yaml
 ```
 
 ### Help
@@ -210,6 +223,23 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## YAML terminology used in this project
+
+The code and comments refer to the following YAML and tree concepts (as in [gopkg.in/yaml.v3](https://github.com/go-yaml/yaml)):
+
+| Term               | Meaning                                                                                                                                                        |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **node**           | A single element in the YAML tree: either a **scalar** (string/number/bool/null), a **mapping**, or a **sequence**. Represented as `*yaml.Node`.               |
+| **DocumentNode**   | The root of a YAML document. Its `Content` is a single child (usually a mapping or sequence).                                                                  |
+| **MappingNode**    | A YAML **mapping** (key-value structure). In the tree, `Content` is a flat list of alternating key nodes and value nodes: `[key1, value1, key2, value2, ...]`. |
+| **SequenceNode**   | A YAML **sequence** (list/array). `Content` is a list of child nodes, one per element.                                                                         |
+| **key**            | In a mapping, the first of each pair of nodes (the key name, usually a scalar).                                                                                |
+| **value**          | In a mapping, the second of each pair; can be a scalar, another mapping, or a sequence.                                                                        |
+| **Content**        | The `Content` field of a `yaml.Node`: the slice of child nodes. For a mapping it’s key/value pairs; for a sequence it’s the list items.                        |
+| **recursive sort** | We sort each mapping’s keys and then **recurse** into each value (and into each sequence element), so every nested map and list is sorted too.                 |
+
+So when we say “sort a mapping node”, we mean: take its key-value pairs, sort them by key (alphabetically or, at the root with `-k`, by a fixed K8s order), then recurse into each value.
 
 ## Acknowledgments
 

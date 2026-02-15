@@ -109,3 +109,39 @@ database:
 		t.Error("Nested keys should be preserved")
 	}
 }
+
+func TestSortYAMLK8s(t *testing.T) {
+	input := `spec:
+  z: 1
+  a: 2
+metadata:
+  name: foo
+kind: ConfigMap
+apiVersion: v1
+status:
+  x: 3`
+
+	result, err := SortYAMLK8s([]byte(input))
+	if err != nil {
+		t.Fatalf("SortYAMLK8s() error = %v", err)
+	}
+	resultStr := string(result)
+	// Root must be in K8s order: apiVersion, kind, metadata, spec, status
+	apiVersionPos := strings.Index(resultStr, "apiVersion:")
+	kindPos := strings.Index(resultStr, "kind:")
+	metadataPos := strings.Index(resultStr, "metadata:")
+	specPos := strings.Index(resultStr, "spec:")
+	statusPos := strings.Index(resultStr, "status:")
+	if apiVersionPos == -1 || kindPos == -1 || metadataPos == -1 || specPos == -1 || statusPos == -1 {
+		t.Fatalf("missing one of apiVersion/kind/metadata/spec/status")
+	}
+	if apiVersionPos >= kindPos || kindPos >= metadataPos || metadataPos >= specPos || specPos >= statusPos {
+		t.Errorf("root keys not in K8s order: apiVersion=%d kind=%d metadata=%d spec=%d status=%d",
+			apiVersionPos, kindPos, metadataPos, specPos, statusPos)
+	}
+	// Nested keys under spec should be alphabetical (a before z)
+	specSection := resultStr[specPos:]
+	if strings.Index(specSection, "a:") > strings.Index(specSection, "z:") {
+		t.Error("under spec, keys should be sorted alphabetically")
+	}
+}

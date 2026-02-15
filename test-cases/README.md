@@ -9,12 +9,28 @@ Real-world YAML samples used for integration tests.
 
 ## Inputs
 
+### NeuVector CRDs
+
 | File | Description |
 |------|-------------|
 | `grp-ui-old.yaml` | NvSecurityRule (NeuVector) – older variant, Monitor mode |
 | `grp-ui-new.yaml` | NvSecurityRule – newer variant, Protect mode, more rules |
 | `cfgGroupsExport.yaml` | NvSecurityRule export snippet with comments |
 | `cfgAdmissionRules.yaml` | NvAdmissionControlSecurityRule with deny rules |
+
+### Kubernetes manifests (real-world K8s resources)
+
+| File | Description |
+|------|-------------|
+| `k8s-configmap.yaml` | ConfigMap with `data` keys |
+| `k8s-deployment.yaml` | Deployment with replicas, strategy, template, containers, probes |
+| `k8s-ingress.yaml` | Ingress with rules, paths, TLS |
+| `k8s-job.yaml` | Batch Job with backoff, template, command |
+| `k8s-namespace.yaml` | Namespace with labels and annotations |
+| `k8s-pod.yaml` | Pod with containers, resources, tolerations |
+| `k8s-pvc.yaml` | PersistentVolumeClaim with accessModes, resources, storageClass |
+| `k8s-secret.yaml` | Secret with `data` and `stringData` |
+| `k8s-service.yaml` | Service with selector, multiple ports |
 
 ## Running tests
 

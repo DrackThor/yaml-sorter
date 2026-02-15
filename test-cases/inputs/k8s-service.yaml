@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+    tier: frontend
+  ports:
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  sessionAffinity: None
+metadata:
+  name: nginx-svc
+  namespace: production
+  labels:
+    app: nginx

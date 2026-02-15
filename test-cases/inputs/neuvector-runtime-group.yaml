@@ -1,29 +1,28 @@
-apiVersion: neuvector.com/v1
 kind: NvSecurityRule
+apiVersion: neuvector.com/v1
 metadata:
-  name: nv.bookstore-ui.publishing-company
   namespace: publishing-company
+  name: nv.bookstore-ui.publishing-company
 spec:
   process_profile:
-    baseline: zero-drift
     mode: Protect
-  response: null
+    baseline: zero-drift
   file: [ ]
+  response: null
   waf:
-    settings: [ ]
     status: true
+    settings: [ ]
   dlp:
+    status: true
     settings:
       - action: deny
         name: sensor.creditcard
-    status: true
   egress:
     - action: allow
       applications:
-        - Consul
-        - SSL
-      name: nv.consul-server.consul-egress-0
-      ports: any
+        - any
+      name: nv.consul-server.consul-egress-1
+      ports: tcp/8502
       priority: 0
       selector:
         comment: ""
@@ -38,9 +37,10 @@ spec:
         original_name: ""
     - action: allow
       applications:
-        - any
-      name: nv.consul-server.consul-egress-1
-      ports: tcp/8502
+        - Consul
+        - SSL
+      name: nv.consul-server.consul-egress-0
+      ports: any
       priority: 0
       selector:
         comment: ""

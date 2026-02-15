@@ -1,25 +1,25 @@
-apiVersion: neuvector.com/v1
 kind: NvAdmissionControlSecurityRule
-metadata:
-  name: local
+apiVersion: neuvector.com/v1
 spec:
   rules:
     - action: deny
-      comment: only allow custom registry
       disabled: false
+      comment: only allow custom registry
       criteria:
         - name: imageRegistry
           op: notContainsAny
           path: imageRegistry
           value: 'https://registry.fullstacks.io,https://registry.lab.fullstacks.io'
-    - action: deny
-      comment: deny hostIPC
+    - comment: deny hostIPC
       criteria:
         - name: namespace
-          op: notContainsAny
           path: namespace
           value: 'kube-system,cattle-system,trident,calico-system,cattle-fleet-system'
+          op: notContainsAny
         - name: shareIpcWithHost
-          op: "="
           path: shareIpcWithHost
           value: "true"
+          op: "="
+      action: deny
+metadata:
+  name: local
