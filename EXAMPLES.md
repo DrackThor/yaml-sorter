@@ -354,6 +354,78 @@ spec:
 
 ---
 
+## 9. Comments stay attached to their YAML node
+
+`ysort` preserves comments and keeps them with the key or list item they describe.
+
+### 9.1 Mapping key sort with comments
+
+**Before**
+
+```yaml
+service:
+  # listen port for HTTPS traffic
+  port: 8443 # external LB target
+  # user-facing hostname
+  host: api.example.com
+# deployment name used by monitoring
+app: payments
+```
+
+**After**
+
+```yaml
+# deployment name used by monitoring
+app: payments
+service:
+  # user-facing hostname
+  host: api.example.com
+  # listen port for HTTPS traffic
+  port: 8443 # external LB target
+```
+
+### 9.2 List sort by key (`-c`) with comments
+
+**Config file** (e.g. `.ysort.yaml`):
+
+```yaml
+listSortKeys:
+  - path: spec.egress
+    key: name
+```
+
+**Before**
+
+```yaml
+spec:
+  egress:
+    # second policy in lexical order
+    - name: policy-b
+      action: allow
+    # first policy in lexical order
+    - name: policy-a
+      action: allow
+```
+
+**Command:** `ysort -c .ysort.yaml file.yaml`
+
+**After**
+
+```yaml
+spec:
+  egress:
+    # first policy in lexical order
+    - action: allow
+      name: policy-a
+    # second policy in lexical order
+    - action: allow
+      name: policy-b
+```
+
+The list is sorted by `name`, and each comment stays with its original list item.
+
+---
+
 ## Config file reference
 
 | Field  | Meaning                                                                                                                       |

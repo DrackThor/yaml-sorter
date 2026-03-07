@@ -7,6 +7,7 @@ A command-line tool written in Go that sorts YAML files alphabetically by their 
 - Sort YAML files **recursively** by keys (every mapping level, including inside lists)
 - Optional **Kubernetes manifest** mode (`-k`): root keys in fixed order (`apiVersion`, `kind`, `metadata`, `spec`, …), rest alphabetical
 - **Config file** (`-c`): sort lists of objects by a specific key (e.g. `spec.egress` by `name`) for stable, deterministic order
+- Preserve YAML comments and keep them attached to their associated key/list item after sorting
 - In-place sorting option (`-i`)
 - Output to a new file option (`-o`)
 - Standard output support
@@ -105,6 +106,13 @@ ysort -k -c .ysort.yaml -o sorted.yaml neuvector-runtime-group.yaml
 
 An example config is in the repo: [.ysort.example.yaml](.ysort.example.yaml). For before/after examples of list sorting, see [EXAMPLES.md](EXAMPLES.md).
 
+### Comment preservation
+
+`ysort` preserves YAML comments and keeps them attached to their assigned node.
+When keys or list items move due to sorting, their comments move with them.
+
+See [EXAMPLES.md](EXAMPLES.md) for comment-preservation examples.
+
 ### Help
 
 Display help information:
@@ -130,6 +138,7 @@ ysort --help
 - Kubernetes manifest root order (`-k`)
 - **Sorting lists of objects by key** with a config file (`-c`): `spec.egress`, `spec.ingress` by `name`
 - Multiple list paths and combined K8s + list sort (e.g. NeuVector-style manifests)
+- Comment preservation: comments stay with their assigned node (key/list item) after sorting
 
 Quick illustration (default alphabetical sort):
 
@@ -141,7 +150,9 @@ zebra:
   b: value2
 apple: value
 banana: value
+```
 
+```yaml
 # After (ysort file.yaml)
 apple: value
 banana: value
@@ -167,7 +178,7 @@ Run these from the repository root.
 |------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `go mod tidy`                      | Updates `go.mod` and `go.sum`: adds any missing dependencies, removes unused ones, and pins versions. Run after cloning or when you change imports. |
 | `go mod download`                  | Downloads all modules listed in `go.mod` into the module cache (optional; `go build` and `go test` do this automatically).                          |
-| `go build -o ysort .`          | Builds the current package (`.`) and writes the executable to `ysort`.                                                                          |
+| `go build -o ysort .`              | Builds the current package (`.`) and writes the executable to `ysort`.                                                                              |
 | `go test ./...`                    | Runs all tests in the module (unit tests and `test-cases/` integration tests).                                                                      |
 | `go test -short ./...`             | Same as above but skips long-running tests if the code uses `testing.Short()`.                                                                      |
 | `go test -cover ./...`             | Runs tests and prints per-package coverage.                                                                                                         |
