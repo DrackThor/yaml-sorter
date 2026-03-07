@@ -1,4 +1,4 @@
-# yaml-sort examples
+# ysort examples
 
 Before/after examples from simple to advanced, including list-of-objects sorting with a config file.
 
@@ -16,7 +16,7 @@ apple: 1
 banana: 2
 ```
 
-**Command:** `yaml-sort file.yaml`
+**Command:** `ysort file.yaml`
 
 **After**
 
@@ -106,7 +106,7 @@ kind: Deployment
 apiVersion: apps/v1
 ```
 
-**Command:** `yaml-sort -k file.yaml`
+**Command:** `ysort -k file.yaml`
 
 **After**
 
@@ -143,7 +143,7 @@ spec:
       ports: any
 ```
 
-**Command:** `yaml-sort file.yaml` (no `-c`)
+**Command:** `ysort file.yaml` (no `-c`)
 
 **After**
 
@@ -167,7 +167,7 @@ Keys inside each list item are sorted (`action`, `name`, `ports`), but the list 
 To **sort the list itself** by a field (e.g. `name`), use a **config file** and `-c`.
 The list at the given path is sorted by that key in each element.
 
-**Config file** (e.g. `.yaml-sort.yaml`):
+**Config file** (e.g. `.ysort.yaml`):
 
 ```yaml
 listSortKeys:
@@ -188,7 +188,7 @@ spec:
       ports: any
 ```
 
-**Command:** `yaml-sort -c .yaml-sort.yaml file.yaml`
+**Command:** `ysort -c .ysort.yaml file.yaml`
 
 **After**
 
@@ -211,7 +211,7 @@ The list `spec.egress` is now ordered by `name` (egress-0 before egress-1), and 
 
 You can define several rules: each path can use a different key (or the same key).
 
-**Config file** (e.g. `.yaml-sort.yaml`):
+**Config file** (e.g. `.ysort.yaml`):
 
 ```yaml
 listSortKeys:
@@ -244,7 +244,7 @@ spec:
       path: /pause
 ```
 
-**Command:** `yaml-sort -c .yaml-sort.yaml file.yaml`
+**Command:** `ysort -c .ysort.yaml file.yaml`
 
 **After**
 
@@ -276,7 +276,7 @@ spec:
 
 Combine `-k` (K8s root order) and `-c` (list sort keys) for manifests that have both a K8s-like root and lists of objects (e.g. NeuVector `NvSecurityRule`).
 
-**Config file** (e.g. `.yaml-sort.yaml`):
+**Config file** (e.g. `.ysort.yaml`):
 
 ```yaml
 listSortKeys:
@@ -316,7 +316,7 @@ spec:
     baseline: zero-drift
 ```
 
-**Command:** `yaml-sort -k -c .yaml-sort.yaml -o sorted.yaml file.yaml`
+**Command:** `ysort -k -c .ysort.yaml -o sorted.yaml file.yaml`
 
 **After**
 
@@ -363,6 +363,6 @@ spec:
 
 - You can have as many `listSortKeys` entries as you need (different or nested lists).
 - Paths are matched exactly; no wildcards.
-- Copy [.yaml-sort.example.yaml](.yaml-sort.example.yaml) to `.yaml-sort.yaml` and adjust paths/keys for your YAML.
+- Copy [.ysort.example.yaml](.ysort.example.yaml) to `.ysort.yaml` and adjust paths/keys for your YAML.
 
 See [README](README.md) for installation, flags, and usage.

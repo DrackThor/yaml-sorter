@@ -1,4 +1,4 @@
-# yaml-sort
+# ysort
 
 A command-line tool written in Go that sorts YAML files alphabetically by their keys while preserving the structure and hierarchy.
 
@@ -19,7 +19,7 @@ A command-line tool written in Go that sorts YAML files alphabetically by their 
 ```bash
 git clone https://github.com/drackthor/yaml-sort.git
 cd yaml-sort
-go build -o yaml-sort .
+go build -o ysort .
 ```
 
 ### Using Go Install
@@ -41,7 +41,7 @@ Download published artifacts from the [Releases](https://github.com/drackthor/ya
 Sort a YAML file and output to stdout:
 
 ```bash
-yaml-sort file.yaml
+ysort file.yaml
 ```
 
 ### In-place Sorting
@@ -49,9 +49,9 @@ yaml-sort file.yaml
 Sort a file in-place, replacing the original file:
 
 ```bash
-yaml-sort -i file.yaml
+ysort -i file.yaml
 # or
-yaml-sort --inplace file.yaml
+ysort --inplace file.yaml
 ```
 
 ### Output to File
@@ -59,9 +59,9 @@ yaml-sort --inplace file.yaml
 Sort a file and write the result to a new file:
 
 ```bash
-yaml-sort -o sorted.yaml file.yaml
+ysort -o sorted.yaml file.yaml
 # or
-yaml-sort --output sorted.yaml file.yaml
+ysort --output sorted.yaml file.yaml
 ```
 
 ### Kubernetes manifests (-k)
@@ -73,8 +73,8 @@ For Kubernetes-style YAML (e.g. `kind`, `apiVersion`, `metadata`, `spec`), use `
 Everything under those keys (e.g. under `metadata` or `spec`) is still sorted **recursively** and alphabetically.
 
 ```bash
-yaml-sort -k deployment.yaml
-yaml-sort -k -o sorted.yaml manifest.yaml
+ysort -k deployment.yaml
+ysort -k -o sorted.yaml manifest.yaml
 ```
 
 ### Sort lists of objects by key (config file, `-c`)
@@ -99,20 +99,20 @@ listSortKeys:
 Example with NeuVector runtime group and K8s root order:
 
 ```bash
-cp .yaml-sort.example.yaml .yaml-sort.yaml
-yaml-sort -k -c .yaml-sort.yaml -o sorted.yaml neuvector-runtime-group.yaml
+cp .ysort.example.yaml .ysort.yaml
+ysort -k -c .ysort.yaml -o sorted.yaml neuvector-runtime-group.yaml
 ```
 
-An example config is in the repo: [.yaml-sort.example.yaml](.yaml-sort.example.yaml). For before/after examples of list sorting, see [EXAMPLES.md](EXAMPLES.md).
+An example config is in the repo: [.ysort.example.yaml](.ysort.example.yaml). For before/after examples of list sorting, see [EXAMPLES.md](EXAMPLES.md).
 
 ### Help
 
 Display help information:
 
 ```bash
-yaml-sort -h
+ysort -h
 # or
-yaml-sort --help
+ysort --help
 ```
 
 | Flag        | Short | Description                                                  |
@@ -142,7 +142,7 @@ zebra:
 apple: value
 banana: value
 
-# After (yaml-sort file.yaml)
+# After (ysort file.yaml)
 apple: value
 banana: value
 zebra:
@@ -167,7 +167,7 @@ Run these from the repository root.
 |------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `go mod tidy`                      | Updates `go.mod` and `go.sum`: adds any missing dependencies, removes unused ones, and pins versions. Run after cloning or when you change imports. |
 | `go mod download`                  | Downloads all modules listed in `go.mod` into the module cache (optional; `go build` and `go test` do this automatically).                          |
-| `go build -o yaml-sort .`          | Builds the current package (`.`) and writes the executable to `yaml-sort`.                                                                          |
+| `go build -o ysort .`          | Builds the current package (`.`) and writes the executable to `ysort`.                                                                          |
 | `go test ./...`                    | Runs all tests in the module (unit tests and `test-cases/` integration tests).                                                                      |
 | `go test -short ./...`             | Same as above but skips long-running tests if the code uses `testing.Short()`.                                                                      |
 | `go test -cover ./...`             | Runs tests and prints per-package coverage.                                                                                                         |
@@ -177,7 +177,7 @@ Run these from the repository root.
 | `go run ./scripts/gen_expected.go` | Generates sorted YAML files from `test-cases/inputs/` into `test-cases/expected/`.                                                                  |
 | `go run . file.yaml`               | Builds and runs the CLI in one step (e.g. `go run . -o out.yaml file.yaml`).                                                                        |
 
-**First-time setup:** after cloning, run `go mod tidy` so `go.sum` is populated; then `go build -o yaml-sort .` and `go test ./...` should work.
+**First-time setup:** after cloning, run `go mod tidy` so `go.sum` is populated; then `go build -o ysort .` and `go test ./...` should work.
 
 ### Running Tests
 
@@ -233,7 +233,7 @@ pre-commit run --all-files
 ### Building
 
 ```bash
-go build -o yaml-sort .
+go build -o ysort .
 ```
 
 ## Contributing

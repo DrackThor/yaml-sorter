@@ -1,11 +1,11 @@
 version: 2
 
-project_name: yaml-sort
+project_name: ysort
 
 builds:
-  - id: yaml-sort
+  - id: ysort
     main: .
-    binary: yaml-sort
+    binary: ysort
     env:
       - CGO_ENABLED=0
     goos:

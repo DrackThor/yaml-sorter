@@ -17,9 +17,9 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "yaml-sort [file]",
+	Use:   defaultCommandName + " [file]",
 	Short: "A tool to sort YAML files",
-	Long: `yaml-sort is a CLI tool that sorts YAML files alphabetically
+	Long: `ysort is a CLI tool that sorts YAML files alphabetically
 by their keys while preserving the structure and comments where possible.`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(_ *cobra.Command, args []string) error {
@@ -84,6 +84,8 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.Use = commandNameFromArg0(os.Args[0]) + " [file]"
+
 	rootCmd.Flags().BoolVarP(&inplace, "inplace", "i", false, "sort file in-place, replacing the original file")
 	rootCmd.Flags().StringVarP(&output, "output", "o", "", "write sorted output to specified file")
 	rootCmd.Flags().BoolVarP(&k8sMode, "k8s", "k", false, "Kubernetes manifest mode: root keys in fixed order (apiVersion, kind, metadata, spec, …), rest alphabetical")

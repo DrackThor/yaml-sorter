@@ -55,10 +55,10 @@ jobs:
           go-version-file: go.mod
 
       - name: Build
-        run: go build -v -o yaml-sort .
+        run: go build -v -o ysort .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: yaml-sort-ci-linux-amd64
-          path: yaml-sort
+          name: ysort-ci-linux-amd64
+          path: ysort

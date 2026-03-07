@@ -7,7 +7,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// File holds the yaml-sort configuration (e.g. from .yaml-sort.yaml).
+// File holds the ysort configuration (e.g. from .ysort.yaml).
 type File struct {
 	// ListSortKeys defines how to sort lists of objects: for each path (e.g. "spec.egress"),
 	// sort the list by the given key (e.g. "name") within each element.

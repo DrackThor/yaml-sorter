@@ -1,4 +1,4 @@
-# Pre-commit hooks for yaml-sort
+# Pre-commit hooks for ysort
 # Install: pre-commit install --install-hook-types commit-msg pre-commit
 # Run:    pre-commit run --all-files
 

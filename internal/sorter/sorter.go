@@ -48,6 +48,7 @@ func SortYAMLWithOptions(data []byte, opts Options) ([]byte, error) {
 	}
 
 	root := node.Content[0]
+	normalizeLeadingComments(root, data)
 	sortNodeWithPath(root, nil, opts)
 
 	result, err := yaml.Marshal(&node)
@@ -173,4 +174,129 @@ func rebuildMappingContent(node *yaml.Node, pairs []kvPair) {
 	for _, p := range pairs {
 		node.Content = append(node.Content, p.key, p.value)
 	}
+}
+
+// normalizeLeadingComments ensures comments that appear directly above nodes in
+// source text stay attached to those nodes, including blank separators inside a
+// comment block.
+func normalizeLeadingComments(node *yaml.Node, data []byte) {
+	lines := strings.Split(string(data), "\n")
+	normalizeNodeLeadingComments(node, lines)
+}
+
+func normalizeNodeLeadingComments(node *yaml.Node, lines []string) {
+	if node == nil {
+		return
+	}
+
+	switch node.Kind {
+	case yaml.MappingNode:
+		normalizeMappingLeadingComments(node, lines)
+		for i := 1; i < len(node.Content); i += 2 {
+			normalizeNodeLeadingComments(node.Content[i], lines)
+		}
+	case yaml.SequenceNode:
+		normalizeSequenceLeadingComments(node, lines)
+		for _, item := range node.Content {
+			normalizeNodeLeadingComments(item, lines)
+		}
+	case yaml.DocumentNode:
+		for _, child := range node.Content {
+			normalizeNodeLeadingComments(child, lines)
+		}
+	}
+}
+
+func normalizeMappingLeadingComments(node *yaml.Node, lines []string) {
+	if node.Kind != yaml.MappingNode || len(node.Content)%2 != 0 {
+		return
+	}
+
+	headComments := make([]string, 0, len(node.Content)/2)
+	for i := 0; i < len(node.Content); i += 2 {
+		key := node.Content[i]
+		head := extractLeadingCommentBlock(lines, key.Line)
+		headComments = append(headComments, head)
+		if head != "" {
+			key.HeadComment = head
+		}
+	}
+
+	for i := 0; i < len(node.Content)-2; i += 2 {
+		nextIdx := (i / 2) + 1
+		if headComments[nextIdx] == "" {
+			continue
+		}
+		node.Content[i].FootComment = ""
+		node.Content[i+1].FootComment = ""
+	}
+}
+
+func normalizeSequenceLeadingComments(node *yaml.Node, lines []string) {
+	if node.Kind != yaml.SequenceNode {
+		return
+	}
+
+	headComments := make([]string, 0, len(node.Content))
+	for _, item := range node.Content {
+		head := extractLeadingCommentBlock(lines, item.Line)
+		headComments = append(headComments, head)
+		if head != "" {
+			item.HeadComment = head
+		}
+	}
+
+	for i := 0; i < len(node.Content)-1; i++ {
+		if headComments[i+1] == "" {
+			continue
+		}
+		node.Content[i].FootComment = ""
+	}
+}
+
+func extractLeadingCommentBlock(lines []string, line int) string {
+	if line <= 1 || line > len(lines) {
+		return ""
+	}
+
+	collected := make([]string, 0)
+	hasComment := false
+	for i := line - 2; i >= 0; i-- {
+		current := lines[i]
+		trimmed := strings.TrimSpace(current)
+		if trimmed == "" {
+			collected = append(collected, "")
+			continue
+		}
+
+		leftTrimmed := strings.TrimLeft(current, " \t")
+		if strings.HasPrefix(leftTrimmed, "#") {
+			collected = append(collected, leftTrimmed)
+			hasComment = true
+			continue
+		}
+
+		break
+	}
+
+	if !hasComment {
+		return ""
+	}
+
+	// We only keep blank separators that occur after at least one comment line.
+	for len(collected) > 0 && collected[len(collected)-1] == "" {
+		collected = collected[:len(collected)-1]
+	}
+
+	for i, j := 0, len(collected)-1; i < j; i, j = i+1, j-1 {
+		collected[i], collected[j] = collected[j], collected[i]
+	}
+
+	for i := range collected {
+		if collected[i] == "" {
+			collected[i] = "#"
+		}
+	}
+
+	return strings.Join(collected, "\n")
 }

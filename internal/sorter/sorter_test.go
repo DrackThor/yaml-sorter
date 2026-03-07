@@ -179,3 +179,58 @@ func TestSortYAMLWithOptions_ListSortKeys(t *testing.T) {
 		t.Error("spec.ingress list should be sorted by name (ingress-0 before ingress-1)")
 	}
 }
+
+func TestSortYAML_PreservesLeadingCommentAttachment(t *testing.T) {
+	input := `b: value-b
+# attached to a
+a: value-a
+`
+
+	result, err := SortYAML([]byte(input))
+	if err != nil {
+		t.Fatalf("SortYAML() error = %v", err)
+	}
+
+	out := string(result)
+	commentPos := strings.Index(out, "# attached to a")
+	aPos := strings.Index(out, "a: value-a")
+	bPos := strings.Index(out, "b: value-b")
+	if commentPos == -1 || aPos == -1 || bPos == -1 {
+		t.Fatalf("missing expected output segments: %q", out)
+	}
+	if commentPos > aPos {
+		t.Fatalf("comment should remain above key a: %q", out)
+	}
+	if aPos > bPos {
+		t.Fatalf("key sorting failed: %q", out)
+	}
+}
+
+func TestSortYAML_PreservesMultilineCommentBlockWithBlankLines(t *testing.T) {
+	input := `data:
+  b: "2"
+  # this is the Cache Time To Live
+
+  # one hour is the default value
+  a: "1"
+`
+
+	result, err := SortYAML([]byte(input))
+	if err != nil {
+		t.Fatalf("SortYAML() error = %v", err)
+	}
+
+	out := string(result)
+	wantCommentBlock := "# this is the Cache Time To Live\n    #\n    # one hour is the default value\n    a: \"1\""
+	if !strings.Contains(out, wantCommentBlock) {
+		t.Fatalf("expected multiline comment block above a, got:\n%s", out)
+	}
+
+	again, err := SortYAML(result)
+	if err != nil {
+		t.Fatalf("second SortYAML() error = %v", err)
+	}
+	if string(again) != out {
+		t.Fatalf("sort should remain idempotent with comment blocks")
+	}
+}

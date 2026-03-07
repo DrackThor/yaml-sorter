@@ -6,7 +6,17 @@ metadata:
   labels:
     app: myapp
 data:
-  LOG_LEVEL: info
-  DB_HOST: postgres.default.svc.cluster.local
+  # this is the app specific log level
+  #   possible values are "info", "debug" and "none"
+  #   you may need to restart the app for the change to take effect
+  LOG_LEVEL: "info"
+  # Database host FQDN
+  #
+  # this is only the FQDN of the host
+  #   port 5432 is assumed by default, if not specified otherwise
+  DB_HOST: "postgres.default.svc.cluster.local"
+  # this is the Cache Time To Live
+
+  # one our is our default value
   CACHE_TTL: "3600"
   FEATURE_FLAGS: "new-ui,beta-api"

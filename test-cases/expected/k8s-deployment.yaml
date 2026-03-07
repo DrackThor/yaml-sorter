@@ -2,13 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     annotations:
+        # attached to 'foo'
+        deployment.kubernetes.io/foo: "bar"
+        # attached to 'hello'
+        deployment.kubernetes.io/hello: "world"
+        # attached to 'revision'
         deployment.kubernetes.io/revision: "1"
     labels:
+        # yes, still nginx
         app: nginx
         tier: frontend
     name: nginx-deploy
     namespace: production
 spec:
+    # min 3 replicas for HA
     replicas: 3
     selector:
         matchLabels:
@@ -16,6 +23,7 @@ spec:
     strategy:
         rollingUpdate:
             maxSurge: 1
+            # downtime is fine
             maxUnavailable: 0
         type: RollingUpdate
     template:
@@ -30,6 +38,7 @@ spec:
                     httpGet:
                         path: /
                         port: 80
+                    # give hime some time, will ya!
                     initialDelaySeconds: 10
                     periodSeconds: 5
                   name: nginx
@@ -42,4 +51,5 @@ spec:
                         memory: 256Mi
                     requests:
                         cpu: 100m
+                        # min 128Mi memory required
                         memory: 128Mi
