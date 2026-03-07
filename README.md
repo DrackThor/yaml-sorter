@@ -25,7 +25,7 @@ go build -o ysort .
 ### Using Go Install
 
 ```bash
-go install github.com/drackthor/yaml-sort@latest
+go install github.com/drackthor/ysort@latest
 ```
 
 ### Releases
