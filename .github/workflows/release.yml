@@ -73,6 +73,18 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Install Syft
+        id: syft
+        uses: anchore/sbom-action/download-syft@v0
+        with:
+          syft-version: v1.42.1
+
+      - name: Add Syft to PATH
+        run: echo "$(dirname "${{ steps.syft.outputs.cmd }}")" >> "$GITHUB_PATH"
+
+      - name: Verify Syft
+        run: ${{ steps.syft.outputs.cmd }} version
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v7
         with:
