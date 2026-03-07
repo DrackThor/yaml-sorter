@@ -1,4 +1,4 @@
-module github.com/drackthor/yaml-sort
+module github.com/drackthor/ysort
 
 go 1.26
 

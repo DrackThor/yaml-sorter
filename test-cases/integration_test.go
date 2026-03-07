@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/drackthor/yaml-sort/internal/sorter"
+	"github.com/drackthor/ysort/internal/sorter"
 	"gopkg.in/yaml.v3"
 )
 

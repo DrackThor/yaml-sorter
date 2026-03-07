@@ -18,8 +18,8 @@ A command-line tool written in Go that sorts YAML files alphabetically by their 
 ### From Source
 
 ```bash
-git clone https://github.com/drackthor/yaml-sort.git
-cd yaml-sort
+git clone https://github.com/drackthor/ysort.git
+cd ysort
 go build -o ysort .
 ```
 
@@ -29,11 +29,47 @@ go build -o ysort .
 go install github.com/drackthor/ysort@latest
 ```
 
+### Using install.sh (curl | sh)
+
+Install using the repository installer script:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/drackthor/ysort/main/install.sh | sh
+```
+
+The installer supports environment variables for parameterization.
+Set variables on the `sh` side of the pipeline, for example:
+
+```bash
+YSORT_VERSION=v1.2.3 YSORT_OS=linux YSORT_ARCH=amd64 YSORT_INSTALL_DIR="$HOME/.local/bin" YSORT_YES=1 \
+curl -fsSL https://raw.githubusercontent.com/drackthor/ysort/main/install.sh | sh
+```
+
+Supported environment variables:
+
+| Variable            | Description                                                      | Default                                      |
+|---------------------|------------------------------------------------------------------|----------------------------------------------|
+| `YSORT_VERSION`     | Release version/tag to install (for example `v1.2.3` or `1.2.3`) | Latest release from GitHub API               |
+| `YSORT_OS`          | Target OS (`linux`, `darwin`, `windows`)                         | Auto-detect via `uname -s`, fallback `linux` |
+| `YSORT_ARCH`        | Target architecture (`amd64`, `arm64`)                           | Auto-detect via `uname -m`, fallback `amd64` |
+| `YSORT_INSTALL_DIR` | Directory to install `ysort` into                                | Auto-select from existing + PATH dirs        |
+| `YSORT_YES`         | Skip interactive approval prompt (`1/true/yes`)                  | Prompt required                              |
+| `YSORT_QUIET`       | Reduce installer output (`1/true/yes`)                           | Verbose step-by-step output                  |
+
+Install directory auto-selection (used only when `YSORT_INSTALL_DIR` is not set):
+
+1. `~/.local/bin`
+2. `~/bin`
+3. `/usr/local/bin`
+
+The installer picks the first directory that both exists and appears in `$PATH`.
+If none match, installation aborts and asks you to set `YSORT_INSTALL_DIR`.
+
 ### Releases
 
 Pushing to `main` or `master` runs [go-semantic-release](https://github.com/go-semantic-release/action): the next version is derived from **conventional commit messages** since the last tag (`feat:` → minor, `fix:` → patch, `BREAKING CHANGE` → major).
 The release workflow runs lint and tests, then uses the [GoReleaser hook](https://github.com/go-semantic-release/hooks-goreleaser) with [.goreleaser.yaml](.goreleaser.yaml) to build and attach binaries for Linux, macOS, and Windows.
-Download published artifacts from the [Releases](https://github.com/drackthor/yaml-sort/releases) page.
+Download published artifacts from the [Releases](https://github.com/drackthor/ysort/releases) page.
 
 ## Usage
 
@@ -123,12 +159,23 @@ ysort -h
 ysort --help
 ```
 
+### Version
+
+Print the current ysort version:
+
+```bash
+ysort --version
+# or
+ysort version
+```
+
 | Flag        | Short | Description                                                  |
 |-------------|-------|--------------------------------------------------------------|
 | `--inplace` | `-i`  | Write output back to the input file                          |
 | `--output`  | `-o`  | Write output to a file                                       |
 | `--k8s`     | `-k`  | Use K8s root key order (apiVersion, kind, metadata, spec, …) |
 | `--config`  | `-c`  | Config file for list sort keys (path → key)                  |
+| `--version` |       | Print ysort version and exit                                 |
 
 ## Examples
 

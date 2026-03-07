@@ -1,6 +1,6 @@
 package main
 
-import "github.com/drackthor/yaml-sort/cmd"
+import "github.com/drackthor/ysort/cmd"
 
 func main() {
 	cmd.Execute()

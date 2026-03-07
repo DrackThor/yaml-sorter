@@ -4,16 +4,18 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/drackthor/yaml-sort/internal/config"
-	"github.com/drackthor/yaml-sort/internal/sorter"
+	"github.com/drackthor/ysort/internal/config"
+	"github.com/drackthor/ysort/internal/sorter"
+	appversion "github.com/drackthor/ysort/internal/version"
 	"github.com/spf13/cobra"
 )
 
 var (
-	inplace    bool
-	output     string
-	k8sMode    bool
-	configPath string
+	inplace     bool
+	output      string
+	k8sMode     bool
+	configPath  string
+	showVersion bool
 )
 
 var rootCmd = &cobra.Command{
@@ -21,8 +23,21 @@ var rootCmd = &cobra.Command{
 	Short: "A tool to sort YAML files",
 	Long: `ysort is a CLI tool that sorts YAML files alphabetically
 by their keys while preserving the structure and comments where possible.`,
-	Args: cobra.ExactArgs(1),
+	Args: func(cmd *cobra.Command, args []string) error {
+		if showVersion {
+			if len(args) != 0 {
+				return fmt.Errorf("--version does not accept positional arguments")
+			}
+			return nil
+		}
+		return cobra.ExactArgs(1)(cmd, args)
+	},
 	RunE: func(_ *cobra.Command, args []string) error {
+		if showVersion {
+			fmt.Println(appversion.String())
+			return nil
+		}
+
 		inputFile := args[0]
 
 		// Validate flags
@@ -90,4 +105,6 @@ func init() {
 	rootCmd.Flags().StringVarP(&output, "output", "o", "", "write sorted output to specified file")
 	rootCmd.Flags().BoolVarP(&k8sMode, "k8s", "k", false, "Kubernetes manifest mode: root keys in fixed order (apiVersion, kind, metadata, spec, …), rest alphabetical")
 	rootCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file defining list sort keys (e.g. sort spec.egress by name)")
+	rootCmd.Flags().BoolVar(&showVersion, "version", false, "print ysort version and exit")
+	rootCmd.AddCommand(newVersionCommand())
 }
