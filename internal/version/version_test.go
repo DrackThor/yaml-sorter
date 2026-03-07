@@ -1,4 +1,4 @@
-package ysortVersion
+package ysortversion
 
 import "testing"
 
