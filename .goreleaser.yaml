@@ -1,6 +1,12 @@
 version: 2
-
 project_name: ysort
+
+# maintainers:
+#   - "Daniel Drack <daniel@drackthor.me>"
+# license: "MIT"
+# description: |
+#   A command-line tool written in Go that sorts YAML files alphabetically
+#   by their keys while preserving the structure, hierarchy and comments.
 
 builds:
   - id: ysort
@@ -20,4 +26,30 @@ builds:
         goarch: arm64
 
 checksum:
-  name_template: checksums.txt
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+  split: false
+  disable: false
+
+sboms:
+  - documents:
+      - "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}.cdx.sbom"
+    cmd: syft
+    args: [ "$artifact", "-o", "cyclonedx-json=$document" ]
+    artifacts: binary
+    # disable: false
+
+source:
+  enabled: true
+  name_template: "{{ .ProjectName }}-{{ .Version }}"
+  format: "tar.gz"
+  prefix_template: "{{ .ProjectName }}-{{ .Version }}/"
+
+archives:
+  - id: ysort
+    formats: ["tar.gz"]
+    meta: false
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: true
+    strip_binary_directory: false
+    allow_different_binary_count: true

@@ -1,6 +1,6 @@
 # ysort
 
-A command-line tool written in Go that sorts YAML files alphabetically by their keys while preserving the structure and hierarchy.
+A command-line tool written in Go that sorts YAML files alphabetically by their keys while preserving the structure, hierarchy and comments.
 
 ## Features
 
