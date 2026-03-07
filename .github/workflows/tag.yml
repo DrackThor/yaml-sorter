@@ -1,15 +1,12 @@
-name: "[pr] Lint, test, build"
+name: "[tag] Semantic release"
 
 on:
   push:
     branches:
-      - "**"
-    tags-ignore:
-      - "**"
-  pull_request:
+      - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   lint:
@@ -34,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -42,23 +40,21 @@ jobs:
       - name: Test
         run: go test -v ./...
 
-  build:
-    name: "[build] go build"
+  release:
+    name: "[tag] go-semantic-release"
     runs-on: ubuntu-latest
     needs: [ lint, test ]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
 
-      - name: Build
-        run: go build -v -o ysort .
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ysort-ci-linux-amd64
-          path: ysort
+      - name: Run go-semantic release
+        uses: go-semantic-release/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

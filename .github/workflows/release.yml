@@ -1,71 +1,30 @@
-name: "[release] Semantic release"
+name: "[release] goreleaser"
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 
 permissions:
   contents: write
 
 jobs:
-  lint:
-    name: "[lint] golangci-lint"
+  goreleaser:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.9.0
-          args: ./...
-
-  test:
-    name: "[test] go test"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-
-      - name: Test
-        run: go test -v ./...
-
-  release:
-    name: "[release] go-semantic-release + goreleaser"
-    runs-on: ubuntu-latest
-    needs: [lint, test]
-    steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
-
-      - name: Set up GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+          go-version: stable
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
           version: "~> v2"
-          install-only: true
-
-      - name: Run semantic release with GoReleaser hook
-        uses: go-semantic-release/action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          changelog-file: CHANGELOG.md
-          hooks: goreleaser
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
