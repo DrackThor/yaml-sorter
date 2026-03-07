@@ -7,8 +7,31 @@ REPO_NAME="ysort"
 BINARY_NAME="ysort"
 API_BASE_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}"
 
+COLOR_RESET=""
+COLOR_INFO=""
+COLOR_ERROR=""
+COLOR_PROMPT=""
+
+init_colors() {
+  if [ -n "${NO_COLOR:-}" ]; then
+    return
+  fi
+
+  if [ "${TERM:-}" = "dumb" ]; then
+    return
+  fi
+
+  if [ -t 1 ] || [ -t 2 ]; then
+    esc="$(printf '\033')"
+    COLOR_RESET="${esc}[0m"
+    COLOR_INFO="${esc}[36m"
+    COLOR_ERROR="${esc}[31m"
+    COLOR_PROMPT="${esc}[33m"
+  fi
+}
+
 fatal() {
-  printf '[ysort-install] ERROR: %s\n' "$*" >&2
+  printf '%s[ysort-install] ERROR:%s %s\n' "$COLOR_ERROR" "$COLOR_RESET" "$*" >&2
   exit 1
 }
 
@@ -29,7 +52,7 @@ ASSUME_YES_VALUE="${YSORT_YES:-0}"
 
 log() {
   if ! is_true "$QUIET_VALUE"; then
-    printf '[ysort-install] %s\n' "$*"
+    printf '%s[ysort-install]%s %s\n' "$COLOR_INFO" "$COLOR_RESET" "$*"
   fi
 }
 
@@ -211,7 +234,7 @@ confirm_install() {
     fatal "no interactive terminal for approval. Set YSORT_YES=1 to pre-approve"
   fi
 
-  printf 'Proceed with installation? [y/N]: '
+  printf '%sProceed with installation? [y/N]: %s' "$COLOR_PROMPT" "$COLOR_RESET"
   if ! IFS= read -r answer < /dev/tty; then
     fatal "could not read confirmation input"
   fi
@@ -228,6 +251,8 @@ confirm_install() {
 }
 
 main() {
+  init_colors
+
   require_cmd curl
   require_cmd tar
   require_cmd uname
@@ -304,6 +329,7 @@ main() {
   log "Installation complete."
   log "Run '$BINARY_NAME --help' to verify the installation."
   log "Installed binary path: $target_binary"
+  log "Uninstall using 'rm $target_binary'"
 }
 
 main "$@"

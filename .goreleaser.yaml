@@ -14,6 +14,8 @@ builds:
     binary: ysort
     env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X github.com/drackthor/ysort/internal/version.BuildVersion={{ .Tag }}
     goos:
       - linux
       - darwin

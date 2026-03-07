@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/drackthor/yaml-sort/internal/sorter"
+	"github.com/drackthor/ysort/internal/sorter"
 )
 
 func main() {
