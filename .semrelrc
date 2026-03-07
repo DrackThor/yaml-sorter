@@ -1,13 +1,6 @@
 {
   "plugins": {
-    "commit-analyzer": {
-      "name": "default@^2.31.0"
-    },
-    "ci-condition": {
-      "name": "default@^2.31.0"
-    },
     "changelog-generator": {
-      "name": "default@^2.31.0",
       "options": {
         "emojis": "true"
       }
