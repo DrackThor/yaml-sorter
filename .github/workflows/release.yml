@@ -40,7 +40,7 @@ jobs:
       - name: Test
         run: go test -v ./...
 
-  release:
+  tag:
     name: "[tag] go-semantic-release"
     runs-on: ubuntu-latest
     needs: [ lint, test ]
@@ -58,6 +58,20 @@ jobs:
         uses: go-semantic-release/action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    name: "[release] GoReleaser"
+    runs-on: ubuntu-latest
+    needs: [ lint, test ]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v7
